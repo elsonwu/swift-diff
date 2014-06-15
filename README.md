@@ -1,10 +1,9 @@
 swift-diff (持续学习中...)
 ==========
+初学swift，记录容易跟其他语言混淆的语法特点
 
-记录在学习Swift时，容易跟其他语言混淆的语法特点
 
-
-##可以用下标读取key和value
+##map可以用下标读取key和value
 ```
 var arr = [
 	"k1":"v1", 
@@ -17,13 +16,17 @@ for (k,v) in arr {
 	println("key:\(k), value:\(v)")
 }
 
-//特殊，貌似可以把v直接看成数组
+//貌似可以把v直接看成数组
 for v in arr {
    	println("key:\(v.0), value:\(v.1)")
 }
-```
-	
-##switch 不能没有default，删了会报错
+
+//这样也行	
+println(map["k1"].0)
+```	
+
+##switch不能没有default
+跟golang一样，不需要break
 
 ```
 var v = "test"
@@ -31,12 +34,14 @@ var v = "test"
 switch v {
     case "test":
         println("test")
+    
+    //删了会报错
     default:
         println("default")
 }
 ```
 
-##匿名函数
+##闭包
 
 ```
 func fn(callback:(i2:Int, s2:String)->String) -> String {
@@ -90,7 +95,7 @@ println(v.2)
 
 ```
 
-## class的属性必须得赋值
+##class的属性必须得赋值
 
 不管是直接赋值还是通过init赋值，都必须的赋值，不然直接报错
 
@@ -100,12 +105,14 @@ class Person {
     var age: Int = 27
     
     init(n:String) {
-        self.name = n
+	    name = n
+        //也可以这么写，当参数同名就可以用self.<属性名>区分
+        //self.name = n
     }
 }
 ```
 
-## 子类调父类属性前必须先调父类init
+##子类调父类属性前必须先调父类init
 ```
 class Person {
     var name: String
@@ -134,6 +141,50 @@ class Student: Person{
 
 Student(age:28, n:"elson")
 ```
+
+##费解的参数传递
+
+class调用init方法，必须指定参数名（包括第一个），例如：
+
+```
+class Person {
+    var fullname:String
+    init(name:String) {
+        fullname = name
+    }
+    
+    func Say(firstName:String, lastName:String)->String {
+        return "hello \(firstName), \(lastName)"
+    }
+}
+
+var p = Person(name:"elsonwu")
+//报错
+//var p = Person("elsonwu")
+
+//除去init，普通class方法第一个参数名调用时却不能有？
+p.Say("elson", lastName:"wu")
+//报错
+//Person().Say(firstName:"elson", lastName:"wu")
+//继续报错
+//Person().Say("elson", "wu")
+
+```
+
+看看普通函数
+
+```
+func Say(firstName:String, lastName:String)->String {
+    return "Hello \(firstName), \(lastName)"
+}
+
+Say("elson", "wu")
+//报错
+//Say(firstName:"elson", lastName:"wu")
+
+```
+
+`对以上设计比较不解，请高人指点下？`
 
 ## class方法支持多态
 ```
