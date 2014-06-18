@@ -214,3 +214,72 @@ class Student: Person{
 Student(n:"elson").Say("How about you?")
 Student(n:"elson").Say()
 ```
+
+## protocol
+```
+protocol Person {
+	// 不太明白这里这个get的定义是什么意思
+	// 下面照样可以set，修改属性值
+    var name: String{get}
+    
+    // mutating表示，如果say方法内要修改类
+    // 如果say方法内没有修改类，那么struct不写mutating也可以
+    mutating func say()
+}
+
+class Student: Person {
+    var name: String = "elson"
+    
+    // class 不用写mutating
+    // 因为class本来就是引用传递，可以随时修改类
+    func say() {
+        println("hello " + name)
+    }
+}
+
+struct Instructor: Person {
+    var name: String = "elson"
+    func say() {
+    	// 如果取消注释了下面这一行，则say方法前必须
+    	// 加上mutating标识符，表示要修改类
+    	// 这个有点像golang里面的 *<ClassName> 和 <ClassName>的区别
+    	// name = "baby"
+        println("hello " + name)
+    }
+}
+
+var s = Student()
+s.say()
+var i = Instructor()
+i.say()
+i.name = "father"
+
+```
+
+##extension
+
+这个比较像js，直接为已有的类型添加方法
+
+```
+protocol Example {
+    var desc: String{get}
+    mutating func increase()
+}
+
+extension Int: Example {
+    var desc: String {
+        return "the number is: \(self)"
+    }
+    
+    mutating func increase() {
+        self += 1
+    }
+}
+
+7.desc
+var i = 7
+i.increase()
+println(i)
+```
+
+
